@@ -1,0 +1,1 @@
+export const Prompt = () => <text>Prompt</text>

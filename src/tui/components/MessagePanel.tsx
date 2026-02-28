@@ -1,5 +1,5 @@
-import { BorderChars } from "@opentui/core";
 import { darkOnly as theme } from "../theme";
+import { EmptyBorder } from "../ui/border";
 
 type Message = {
   id: string;
@@ -21,6 +21,7 @@ export const MessagePanel = (props: MessagePanelProps) => (
     marginRight={1}
     paddingTop={1}
     paddingBottom={1}
+    backgroundColor={theme.backgroundElement}
   >
     {props.messages.map((message) =>
       message.role === "user" ? (
@@ -33,7 +34,7 @@ export const MessagePanel = (props: MessagePanelProps) => (
           border={["left"]}
           borderColor={theme.borderActive}
           customBorderChars={{
-            ...BorderChars.single,
+            ...EmptyBorder,
             vertical: "┃",
             bottomLeft: "╹",
           }}

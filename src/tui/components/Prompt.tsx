@@ -1,5 +1,8 @@
-import { BorderChars } from "@opentui/core";
+import { createEffect } from "solid-js";
+import type { KeyEvent, TextareaRenderable } from "@opentui/core";
 import { darkOnly as theme } from "../theme";
+import { EmptyBorder } from "../ui/border";
+import { textareaKeybindings } from "./prompt/textarea-keybindings";
 
 type PromptProps = {
   inputText: string;
@@ -7,80 +10,103 @@ type PromptProps = {
   modelLabel: string;
   providerLabel: string;
   hints: string[];
+  onChange?: (value: string) => void;
+  onSubmit?: () => void;
+  onCycleMode?: () => void;
 };
 
-export const Prompt = (props: PromptProps) => (
-  <box marginTop={1} marginLeft={1} marginRight={1} flexDirection="column">
-    <box
-      paddingTop={1}
-      paddingBottom={1}
-      paddingLeft={2}
-      paddingRight={2}
-      backgroundColor={theme.backgroundElement}
-      border={["left"]}
-      borderColor={theme.borderActive}
-      customBorderChars={{
-        ...BorderChars.single,
-        vertical: "┃",
-        bottomLeft: "╹",
-      }}
-    >
-      <text fg={theme.text}>{props.inputText}</text>
-      <box flexDirection="row" gap={1} paddingTop={1}>
-        <text fg={theme.accent}>{props.modeLabel}</text>
-        <text fg={theme.text}>{props.modelLabel}</text>
-        <text fg={theme.textMuted}>{props.providerLabel}</text>
+export const Prompt = (props: PromptProps) => {
+  let input: TextareaRenderable | undefined;
+
+  const handleKeyDown = (event: KeyEvent) => {
+    if (event.name === "tab") {
+      event.preventDefault();
+      props.onCycleMode?.();
+      return;
+    }
+  };
+
+  createEffect(() => {
+    if (!input || input.isDestroyed) return;
+    if (input.plainText !== props.inputText) {
+      input.setText(props.inputText);
+    }
+  });
+
+  return (
+    <box marginTop={1} marginLeft={1} marginRight={1} flexDirection="column">
+      <box
+        border={["left"]}
+        borderColor={theme.borderActive}
+        customBorderChars={{
+          ...EmptyBorder,
+          vertical: "┃",
+          bottomLeft: "╹",
+        }}
+      >
+        <box
+          paddingLeft={2}
+          paddingRight={2}
+          paddingTop={1}
+          flexShrink={0}
+          backgroundColor={theme.backgroundElement}
+          flexGrow={1}
+        >
+          <textarea
+            placeholder={props.inputText ? "" : "Ask anything..."}
+            textColor={theme.text}
+            focusedTextColor={theme.text}
+            minHeight={1}
+            maxHeight={6}
+            onContentChange={() => {
+              if (!input || input.isDestroyed) return;
+              const value = input.plainText ?? "";
+              props.onChange?.(value);
+            }}
+            keyBindings={textareaKeybindings}
+            onKeyDown={handleKeyDown}
+            onSubmit={() => props.onSubmit?.()}
+            ref={(ref: TextareaRenderable) => {
+              input = ref;
+              if (props.inputText && ref.plainText !== props.inputText) {
+                ref.setText(props.inputText);
+              }
+            }}
+            onMouseDown={(event) => event.target?.focus()}
+            focusedBackgroundColor={theme.backgroundElement}
+            cursorColor={theme.text}
+          />
+          <box flexDirection="row" gap={1} paddingTop={1}>
+            <text fg={theme.accent}>{props.modeLabel}</text>
+            <text fg={theme.text}>{props.modelLabel}</text>
+            <text fg={theme.textMuted}>{props.providerLabel}</text>
+          </box>
+        </box>
       </box>
-    </box>
-    <box
-      height={1}
-      border={["left"]}
-      borderColor={theme.borderActive}
-      customBorderChars={{
-        ...BorderChars.single,
-        vertical: "╹",
-        topLeft: " ",
-        topRight: " ",
-        bottomLeft: " ",
-        bottomRight: " ",
-        horizontal: " ",
-        topT: " ",
-        bottomT: " ",
-        leftT: " ",
-        rightT: " ",
-        cross: " ",
-      }}
-    >
       <box
         height={1}
-        border={["bottom"]}
-        borderColor={theme.backgroundElement}
+        border={["left"]}
+        borderColor={theme.borderActive}
         customBorderChars={{
-          ...BorderChars.single,
-          topLeft: " ",
-          topRight: " ",
-          bottomLeft: " ",
-          bottomRight: " ",
-          vertical: " ",
-          horizontal: "▀",
-          topT: " ",
-          bottomT: " ",
-          leftT: " ",
-          rightT: " ",
-          cross: " ",
+          ...EmptyBorder,
+          vertical: "╹",
         }}
-      />
+      >
+        <box
+          height={1}
+          border={["bottom"]}
+          borderColor={theme.backgroundElement}
+          customBorderChars={{
+            ...EmptyBorder,
+            horizontal: "▀",
+          }}
+        />
+      </box>
+      <box flexDirection="row" justifyContent="flex-end" paddingRight={2} paddingTop={1} gap={2}>
+        {props.hints.map((hint) => (
+          <text fg={theme.textMuted}>{hint}</text>
+        ))}
+      </box>
     </box>
-    <box
-      flexDirection="row"
-      justifyContent="flex-end"
-      paddingRight={2}
-      paddingTop={1}
-      gap={2}
-    >
-      {props.hints.map((hint) => (
-        <text fg={theme.textMuted}>{hint}</text>
-      ))}
-    </box>
-  </box>
-);
+  );
+};

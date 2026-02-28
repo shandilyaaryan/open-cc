@@ -1,5 +1,5 @@
-import { BorderChars } from "@opentui/core";
 import { darkOnly as theme } from "../theme";
+import { SplitBorder } from "../ui/border";
 
 type HeaderProps = {
   title: string;
@@ -18,12 +18,9 @@ export const Header = (props: HeaderProps) => (
     paddingLeft={2}
     paddingRight={1}
     backgroundColor={theme.backgroundPanel}
+    {...SplitBorder}
     border={["left"]}
     borderColor={theme.border}
-    customBorderChars={{
-      ...BorderChars.single,
-      vertical: "┃",
-    }}
   >
     <text fg={theme.text}>
       <b>#</b> {props.title}

@@ -1,3 +1,4 @@
+import { createSignal } from "solid-js";
 import { Header } from "./components/Header";
 import { MessagePanel } from "./components/MessagePanel";
 import { Prompt } from "./components/Prompt";
@@ -22,12 +23,24 @@ export const App = () => {
       },
     ],
     prompt: {
-      inputText: "Why are you so dumb?",
-      modeLabel: "Build",
+      inputText: "",
+      modeLabel: "Plan",
       modelLabel: "GPT-5.2 Codex",
       providerLabel: "OpenAI",
       hints: ["ctrl+t variants", "tab agents", "ctrl+p commands"],
     },
+  };
+
+  const [promptText, setPromptText] = createSignal(ui.prompt.inputText);
+  const [modeLabel, setModeLabel] = createSignal(ui.prompt.modeLabel);
+
+  const cycleMode = () => {
+    setModeLabel((value) => (value === "Plan" ? "Build" : "Plan"));
+  };
+
+  const submitPrompt = () => {
+    if (!promptText().trim()) return;
+    setPromptText("");
   };
 
   return (
@@ -35,11 +48,14 @@ export const App = () => {
       <Header title={ui.header.title} stats={ui.header.stats} />
       <MessagePanel messages={ui.messages} />
       <Prompt
-        inputText={ui.prompt.inputText}
-        modeLabel={ui.prompt.modeLabel}
+        inputText={promptText()}
+        modeLabel={modeLabel()}
         modelLabel={ui.prompt.modelLabel}
         providerLabel={ui.prompt.providerLabel}
         hints={ui.prompt.hints}
+        onChange={setPromptText}
+        onSubmit={submitPrompt}
+        onCycleMode={cycleMode}
       />
     </box>
   );

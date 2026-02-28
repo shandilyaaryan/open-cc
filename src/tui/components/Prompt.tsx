@@ -9,7 +9,7 @@ type PromptProps = {
   modeLabel: string;
   modelLabel: string;
   providerLabel: string;
-  hints: string[];
+  hints: { key: string; label: string; visible?: boolean }[];
   onChange?: (value: string) => void;
   onSubmit?: () => void;
   onCycleMode?: () => void;
@@ -103,9 +103,13 @@ export const Prompt = (props: PromptProps) => {
         />
       </box>
       <box flexDirection="row" justifyContent="flex-end" paddingRight={2} paddingTop={1} gap={2}>
-        {props.hints.map((hint) => (
-          <text fg={theme.textMuted}>{hint}</text>
-        ))}
+        {props.hints
+          .filter((hint) => hint.visible !== false)
+          .map((hint) => (
+            <text fg={theme.text}>
+              {hint.key} <span style={{ fg: theme.textMuted }}>{hint.label}</span>
+            </text>
+          ))}
       </box>
     </box>
   );

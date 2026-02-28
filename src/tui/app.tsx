@@ -29,7 +29,11 @@ export const App = () => {
       modeLabel: "Plan",
       modelLabel: "GPT-5.2 Codex",
       providerLabel: "OpenAI",
-      hints: ["ctrl+t variants", "tab agents", "ctrl+p commands"],
+      hints: [
+        { key: "ctrl+t", label: "variants" },
+        { key: "tab", label: "agents" },
+        { key: "ctrl+p", label: "commands" },
+      ],
     },
   };
 

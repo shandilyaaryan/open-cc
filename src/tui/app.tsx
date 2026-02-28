@@ -1,4 +1,5 @@
 import { createSignal } from "solid-js";
+import { darkOnly as theme } from "./theme";
 import { Header } from "./components/Header";
 import { MessagePanel } from "./components/MessagePanel";
 import { Prompt } from "./components/Prompt";
@@ -19,7 +20,8 @@ export const App = () => {
       {
         id: "m2",
         role: "assistant" as const,
-        text: "Got it. I will outline a step-by-step plan and call out risks before we move forward.",
+        text:
+          "Got it. I will outline a step-by-step plan and call out risks before we move forward. Here is a quick example with `inline code` and a block:\n\n```ts\nexport function planMission() {\n  return \"Draft plan and validate risks\";\n}\n```",
       },
     ],
     prompt: {
@@ -44,7 +46,7 @@ export const App = () => {
   };
 
   return (
-    <box flexDirection="column" height="100%">
+    <box flexDirection="column" height="100%" backgroundColor={theme.background}>
       <Header title={ui.header.title} stats={ui.header.stats} />
       <MessagePanel messages={ui.messages} />
       <Prompt

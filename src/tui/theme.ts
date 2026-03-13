@@ -1,10 +1,10 @@
 export const darkOnly = {
-    background: "#111c18",
-    backgroundPanel: "#1a2520",
-    backgroundElement: "#23372B",
-    border: "#3d4a44",
-    borderActive: "#2DD5B7",
-    text: "#C1C497",
-    textMuted: "#53685B",
-    accent: "#549e6a"
-}
+  background: "#0a0a0a",
+  backgroundPanel: "#141414",
+  backgroundElement: "#1e1e1e",
+  border: "#484848",
+  borderActive: "#606060",
+  text: "#eeeeee",
+  textMuted: "#808080",
+  accent: "#9d7cd8",
+};

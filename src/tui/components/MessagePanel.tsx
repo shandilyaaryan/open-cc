@@ -1,5 +1,5 @@
 import { darkOnly as theme } from "../theme";
-import { EmptyBorder, SplitBorder } from "../ui/border";
+import { SplitBorder } from "../ui/border";
 
 type Message = {
   id: string;
